@@ -10,4 +10,13 @@ export default defineConfig({
         }),
         react(),
     ],
+    server: {
+        host: 'localhost',
+        port: 5173,
+        // يسمح لـ XAMPP بالوصول لـ Vite
+        cors: true,
+        hmr: {
+            host: 'localhost',
+        },
+    },
 });
