@@ -7,6 +7,8 @@ return [
         'unauthorized'        => 'You are not authorized for this action.',
         'logout_success'      => 'Logged out successfully.',
     ],
+    'rate_limit'        => 'Too many requests. Please try again later.',
+    'too_many_attempts' => 'Too many login attempts. Please try again in a minute.',
     'cart' => [
         'added'        => 'Product added to cart.',
         'removed'      => 'Product removed from cart.',
