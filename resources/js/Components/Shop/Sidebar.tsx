@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faGauge, faShoppingBag, faCartShopping, faBoxOpen,
-    faUser, faAnglesLeft, faRightFromBracket,
+    faUser, faAnglesLeft, faRightFromBracket, faCode,
 } from '@fortawesome/free-solid-svg-icons';
 import useUIStore from '@/store/uiStore';
 
@@ -11,7 +11,8 @@ const useNavItems = (t: (k: string) => string) => [
     {
         group: t('nav.dashboard'),
         items: [
-            { routeName: 'dashboard',      icon: faGauge,         label: t('nav.dashboard') },
+            { routeName: 'dashboard',    icon: faGauge,  label: t('nav.dashboard') },
+            { routeName: 'api.explorer', icon: faCode,   label: 'API Explorer' },
         ],
     },
     {

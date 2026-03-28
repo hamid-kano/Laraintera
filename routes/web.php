@@ -34,6 +34,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
+
+    // 🔌 API Explorer
+    Route::get('/api-explorer', fn() => Inertia::render('Api/Explorer'))->name('api.explorer');
 });
 
 require __DIR__.'/auth.php';
