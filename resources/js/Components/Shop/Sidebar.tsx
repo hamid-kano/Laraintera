@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faGauge, faShoppingBag, faCartShopping, faBoxOpen,
-    faUser, faAnglesLeft, faRightFromBracket, faCode, faShield,
+    faUser, faAnglesLeft, faRightFromBracket, faCode, faShield, faWarehouse,
 } from '@fortawesome/free-solid-svg-icons';
 import useUIStore from '@/store/uiStore';
 
@@ -13,7 +13,10 @@ const useNavItems = (t: (k: string) => string, isAdmin: boolean) => [
         items: [
             { routeName: 'dashboard',    icon: faGauge,  label: t('nav.dashboard') },
             { routeName: 'api.explorer', icon: faCode,   label: 'API Explorer' },
-            ...(isAdmin ? [{ routeName: 'admin.dashboard', icon: faShield, label: 'Admin' }] : []),
+            ...(isAdmin ? [
+                { routeName: 'admin.dashboard', icon: faShield,    label: 'Admin' },
+                { routeName: 'inventory.index', icon: faWarehouse, label: 'المخزون' },
+            ] : []),
         ],
     },
     {
