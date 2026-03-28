@@ -1,4 +1,3 @@
-import '@/i18n';
 import Sidebar from '@/Components/Shop/Sidebar';
 import Navbar from '@/Components/Shop/Navbar';
 import { PropsWithChildren, useEffect } from 'react';

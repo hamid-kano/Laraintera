@@ -1,38 +1,136 @@
 {
   "nav": {
-    "dashboard":  "Dashboard",
-    "products":   "Products",
-    "cart":       "Cart",
-    "orders":     "Orders",
-    "profile":    "Profile",
-    "logout":     "Logout",
-    "collapse":   "Collapse"
+    "dashboard": "Dashboard",
+    "products":  "Products",
+    "cart":      "Cart",
+    "orders":    "Orders",
+    "profile":   "Profile",
+    "logout":    "Logout",
+    "collapse":  "Collapse"
   },
   "navbar": {
-    "search":        "Search...",
-    "profile":       "Profile",
-    "settings":      "Settings",
-    "logout":        "Logout"
+    "search":   "Search...",
+    "profile":  "Profile",
+    "settings": "Settings",
+    "logout":   "Logout",
+    "customer": "Customer"
   },
   "dashboard": {
-    "title":        "Dashboard",
-    "subtitle":     "Welcome back! Here's what's happening today.",
-    "totalProducts":"Total Products",
-    "totalOrders":  "Total Orders",
-    "totalRevenue": "Total Revenue",
-    "cartItems":    "Cart Items",
-    "recentOrders": "Recent Orders",
-    "colOrder":     "Order #",
-    "colStatus":    "Status",
-    "colTotal":     "Total",
-    "colDate":      "Date",
-    "activity":     "Recent Activity"
+    "title":         "Dashboard",
+    "subtitle":      "Welcome back! Here's what's happening today.",
+    "totalProducts": "Total Products",
+    "totalOrders":   "Total Orders",
+    "totalRevenue":  "Total Revenue",
+    "cartItems":     "Cart Items",
+    "recentOrders":  "Recent Orders",
+    "colOrder":      "Order #",
+    "colStatus":     "Status",
+    "colTotal":      "Total",
+    "colDate":       "Date",
+    "activity":      "Recent Activity"
   },
   "status": {
     "pending":    "Pending",
     "processing": "Processing",
     "completed":  "Completed",
     "cancelled":  "Cancelled"
+  },
+  "products": {
+    "title":             "Products",
+    "available":         "{{count}} products available",
+    "searchPlaceholder": "Search for a product...",
+    "all":               "All",
+    "details":           "Details",
+    "noResults":         "No matching products found",
+    "addToCart":         "Add to Cart",
+    "adding":            "Adding...",
+    "inStock":           "In Stock ({{count}})",
+    "outOfStock":        "Out of Stock"
+  },
+  "cart": {
+    "title":      "Shopping Cart",
+    "empty":      "Your cart is empty",
+    "browse":     "Browse Products",
+    "subtotal":   "Subtotal",
+    "shipping":   "Shipping",
+    "free":       "Free",
+    "total":      "Total",
+    "summary":    "Order Summary",
+    "checkout":   "Checkout",
+    "processing": "Processing..."
+  },
+  "orders": {
+    "title":         "My Orders",
+    "empty":         "No orders yet",
+    "startShopping": "Start Shopping",
+    "order":         "Order #{{id}}"
+  },
+  "welcome": {
+    "badge":        "Best online shopping experience",
+    "heroTitle":    "Shop Smart,",
+    "heroHighlight":"Save More",
+    "heroDesc":     "Discover thousands of products at the best prices. Shop safely, receive quickly, return easily.",
+    "startShopping":"Start Shopping Now →",
+    "haveAccount":  "I already have an account",
+    "whyUs":        "Why Us?",
+    "whyUsDesc":    "We offer you an unmatched shopping experience",
+    "featured":     "Featured Products",
+    "featuredDesc": "Best sellers this week",
+    "viewAll":      "View all →",
+    "ctaTitle":     "Ready to start?",
+    "ctaDesc":      "Join thousands of satisfied customers and start shopping today",
+    "ctaBtn":       "Create Free Account →",
+    "footer":       "My Store — All rights reserved",
+    "login":        "Sign In",
+    "startFree":    "Start Free",
+    "features": {
+      "easy":        "Easy Shopping",
+      "easyDesc":    "Browse thousands of products and buy with one click",
+      "shipping":    "Free Shipping",
+      "shippingDesc":"Free shipping on all orders with no minimum",
+      "secure":      "Secure Payment",
+      "secureDesc":  "All your transactions are protected with the highest security standards",
+      "return":      "Guaranteed Returns",
+      "returnDesc":  "Flexible return policy within 30 days"
+    },
+    "stats": {
+      "products":  "Products Available",
+      "customers": "Happy Customers",
+      "rating":    "Store Rating",
+      "support":   "Support"
+    }
+  },
+  "login": {
+    "title":          "Sign In",
+    "subtitle":       "Sign in to continue",
+    "email":          "Email",
+    "password":       "Password",
+    "rememberMe":     "Remember me",
+    "forgotPassword": "Forgot password?",
+    "submit":         "Sign In",
+    "noAccount":      "Don't have an account?",
+    "registerLink":   "Create one",
+    "placeholder": {
+      "email":    "admin@example.com",
+      "password": "••••••••"
+    }
+  },
+  "register": {
+    "title":           "Create Account",
+    "subtitle":        "Join My Store",
+    "name":            "Full Name",
+    "email":           "Email",
+    "password":        "Password",
+    "confirmPassword": "Confirm Password",
+    "submit":          "Create Account",
+    "hasAccount":      "Already have an account?",
+    "loginLink":       "Sign in",
+    "placeholder": {
+      "name":            "John Doe",
+      "email":           "example@email.com",
+      "password":        "••••••••",
+      "confirmPassword": "••••••••"
+    }
   },
   "common": {
     "cancel":  "Cancel",
