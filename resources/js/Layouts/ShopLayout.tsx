@@ -5,7 +5,7 @@ import { usePage } from '@inertiajs/react';
 import useUIStore from '@/store/uiStore';
 
 export default function ShopLayout({ children }: PropsWithChildren) {
-    const { sidebarCollapsed, lang, setLang } = useUIStore();
+    const { sidebarCollapsed, lang, theme, setLang } = useUIStore();
     const { locale } = usePage().props as any;
     const isRTL = lang === 'ar';
     const offset = sidebarCollapsed
@@ -13,14 +13,20 @@ export default function ShopLayout({ children }: PropsWithChildren) {
         : (isRTL ? 'md:mr-[260px]' : 'md:ml-[260px]');
 
     useEffect(() => {
-        // 📌 مزامنة لغة Laravel Session مع Frontend store
+        // مزامنة اللغة مع Laravel Session
         if (locale && locale !== lang) setLang(locale);
-
-        document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
-        document.documentElement.setAttribute('lang', lang);
-        const theme = localStorage.getItem('theme') || 'light';
-        document.documentElement.classList.toggle('dark', theme === 'dark');
     }, [locale]);
+
+    // تطبيق dir/lang عند تغيير اللغة
+    useEffect(() => {
+        document.documentElement.setAttribute('dir',  isRTL ? 'rtl' : 'ltr');
+        document.documentElement.setAttribute('lang', lang);
+    }, [lang]);
+
+    // تطبيق الثيم من Zustand store — ليس من localStorage
+    useEffect(() => {
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+    }, [theme]);
 
     return (
         <div className="min-h-screen bg-(--color-bg)">

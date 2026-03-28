@@ -2,13 +2,13 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FormEventHandler, useState, useEffect } from 'react';
+import { FormEventHandler, useState } from 'react';
 import InputField from '@/Components/UI/InputField';
-import useUIStore from '@/store/uiStore';
+import { useApplySettings } from '@/hooks/useApplySettings';
 
 export default function Login({ status, canResetPassword }: { status?: string; canResetPassword: boolean }) {
     const { t } = useTranslation();
-    const { lang } = useUIStore();
+    useApplySettings();
     const [showPassword, setShowPassword] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -16,13 +16,6 @@ export default function Login({ status, canResetPassword }: { status?: string; c
         password: '',
         remember: false as boolean,
     });
-
-    useEffect(() => {
-        document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-        document.documentElement.setAttribute('lang', lang);
-        const theme = localStorage.getItem('theme') || 'light';
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-    }, []);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

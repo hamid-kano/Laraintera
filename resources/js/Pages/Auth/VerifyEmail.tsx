@@ -2,20 +2,13 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelopeCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import { FormEventHandler, useEffect } from 'react';
-import useUIStore from '@/store/uiStore';
+import { FormEventHandler } from 'react';
+import { useApplySettings } from '@/hooks/useApplySettings';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     const { t } = useTranslation();
-    const { lang } = useUIStore();
+    useApplySettings();
     const { post, processing } = useForm({});
-
-    useEffect(() => {
-        document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-        document.documentElement.setAttribute('lang', lang);
-        const theme = localStorage.getItem('theme') || 'light';
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-    }, []);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

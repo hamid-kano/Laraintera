@@ -1,21 +1,14 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { FormEventHandler, useEffect } from 'react';
+import { FormEventHandler } from 'react';
 import InputField from '@/Components/UI/InputField';
-import useUIStore from '@/store/uiStore';
+import { useApplySettings } from '@/hooks/useApplySettings';
 
 export default function ForgotPassword({ status }: { status?: string }) {
     const { t } = useTranslation();
-    const { lang } = useUIStore();
+    useApplySettings();
     const { data, setData, post, processing, errors } = useForm({ email: '' });
-
-    useEffect(() => {
-        document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-        document.documentElement.setAttribute('lang', lang);
-        const theme = localStorage.getItem('theme') || 'light';
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-    }, []);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

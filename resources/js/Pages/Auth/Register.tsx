@@ -2,12 +2,13 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { FormEventHandler, useState, useEffect } from 'react';
+import { FormEventHandler, useState } from 'react';
 import useUIStore from '@/store/uiStore';
+import { useApplySettings } from '@/hooks/useApplySettings';
 
 export default function Register() {
     const { t } = useTranslation();
-    const { lang } = useUIStore();
+    useApplySettings();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm]   = useState(false);
 
@@ -17,13 +18,6 @@ export default function Register() {
         password: '',
         password_confirmation: '',
     });
-
-    useEffect(() => {
-        document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-        document.documentElement.setAttribute('lang', lang);
-        const theme = localStorage.getItem('theme') || 'light';
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-    }, []);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
