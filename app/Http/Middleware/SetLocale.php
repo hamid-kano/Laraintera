@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetLocale
@@ -17,12 +18,13 @@ class SetLocale
     {
         $locale = $this->resolveLocale($request);
         app()->setLocale($locale);
+        Carbon::setLocale($locale);
 
         $response = $next($request);
 
         // ✅ نحفظ في Cookie فقط للـ Web (ليس API)
         if (! $request->is('api/*') && $request->cookie(self::COOKIE) !== $locale) {
-            $response->cookie(self::COOKIE, $locale, self::LIFETIME, '/', null, false, false);
+            $response->cookie(self::COOKIE, $locale, self::LIFETIME);
         }
 
         return $response;
