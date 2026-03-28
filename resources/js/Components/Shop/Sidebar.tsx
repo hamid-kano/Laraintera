@@ -1,104 +1,138 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faGauge, faShoppingBag, faCartShopping, faBoxOpen,
+    faUser, faAnglesLeft, faRightFromBracket,
+} from '@fortawesome/free-solid-svg-icons';
+import useUIStore from '@/store/uiStore';
 
-const NAV = [
+const useNavItems = (t: (k: string) => string) => [
     {
-        group: 'المتجر',
+        group: t('nav.dashboard'),
         items: [
-            { href: 'products.index', label: 'المنتجات',    icon: '🛍️' },
-            { href: 'cart.index',     label: 'السلة',        icon: '🛒', badge: true },
-            { href: 'orders.index',   label: 'الطلبات',      icon: '📦' },
+            { routeName: 'dashboard',      icon: faGauge,         label: t('nav.dashboard') },
         ],
     },
     {
-        group: 'الحساب',
+        group: t('nav.products'),
         items: [
-            { href: 'dashboard',      label: 'لوحة التحكم',  icon: '📊' },
-            { href: 'profile.edit',   label: 'الملف الشخصي', icon: '👤' },
+            { routeName: 'products.index', icon: faShoppingBag,   label: t('nav.products') },
+            { routeName: 'cart.index',     icon: faCartShopping,  label: t('nav.cart'),   badge: true },
+            { routeName: 'orders.index',   icon: faBoxOpen,       label: t('nav.orders') },
+        ],
+    },
+    {
+        group: t('nav.profile'),
+        items: [
+            { routeName: 'profile.edit',   icon: faUser,          label: t('nav.profile') },
         ],
     },
 ];
 
-interface Props {
-    collapsed: boolean;
-    onToggle: () => void;
-}
-
-export default function Sidebar({ collapsed, onToggle }: Props) {
+export default function Sidebar() {
+    const { t } = useTranslation();
+    const { sidebarCollapsed, sidebarMobileOpen, lang, toggleSidebar, closeMobileSidebar } = useUIStore();
     const { cartCount } = usePage().props as any;
+    const isRTL = lang === 'ar';
+    const NAV = useNavItems(t);
+
+    const collapseRotate = isRTL
+        ? (sidebarCollapsed ? '' : 'rotate-180')
+        : (sidebarCollapsed ? 'rotate-180' : '');
+
+    const mobileTranslate = sidebarMobileOpen
+        ? 'translate-x-0'
+        : isRTL ? 'max-md:translate-x-full' : 'max-md:-translate-x-full';
+
+    const handleLogout = () => router.post(route('logout'));
 
     return (
-        <aside
-            style={{ background: 'var(--color-sidebar-bg)' }}
-            className={`fixed top-0 right-0 h-screen z-[200] flex flex-col transition-all duration-200 ${collapsed ? 'w-[68px]' : 'w-[260px]'}`}
-        >
-            {/* Logo */}
-            <div className="flex items-center gap-3 px-[18px] min-h-16 border-b border-white/[0.06]">
-                <div
-                    className="w-9 h-9 rounded-[10px] grid place-items-center text-lg shrink-0 text-white font-bold"
-                    style={{ background: 'var(--color-primary)' }}
-                >
-                    ✦
-                </div>
-                <span className={`text-base font-bold text-white whitespace-nowrap transition-opacity duration-200 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                    متجري
-                </span>
-            </div>
+        <>
+            {sidebarMobileOpen && (
+                <div className="fixed inset-0 z-[199] bg-black/50 backdrop-blur-sm md:hidden" onClick={closeMobileSidebar} />
+            )}
 
-            {/* Nav */}
-            <nav className="flex-1 px-2.5 py-3 overflow-y-auto overflow-x-hidden">
-                {NAV.map(({ group, items }) => (
-                    <div key={group}>
-                        <div
-                            className={`text-[10px] font-semibold tracking-widest uppercase px-2.5 pt-4 pb-1.5 whitespace-nowrap transition-opacity duration-200 ${collapsed ? 'opacity-0' : 'opacity-100'}`}
-                            style={{ color: 'var(--color-sidebar-text)' }}
-                        >
-                            {group}
-                        </div>
-                        {items.map(({ href, label, icon, badge }) => {
-                            const isActive = route().current(href);
-                            const badgeCount = badge ? cartCount : null;
-                            return (
-                                <Link
-                                    key={href}
-                                    href={route(href)}
-                                    className="flex items-center gap-3 px-2.5 py-2.5 rounded-lg transition-colors duration-200 whitespace-nowrap"
-                                    style={{
-                                        color: isActive ? 'var(--color-sidebar-active)' : 'var(--color-sidebar-text)',
-                                        background: isActive ? 'rgba(99,102,241,0.1)' : undefined,
-                                    }}
-                                >
-                                    <span className="w-4 h-4 shrink-0 text-base leading-none">{icon}</span>
-                                    <span className={`text-[13.5px] font-medium transition-opacity duration-200 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                                        {label}
-                                    </span>
-                                    {badgeCount > 0 && !collapsed && (
-                                        <span
-                                            className="mr-auto text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-                                            style={{ background: 'var(--color-primary)' }}
-                                        >
-                                            {badgeCount}
-                                        </span>
-                                    )}
-                                </Link>
-                            );
-                        })}
+            <aside className={[
+                'fixed top-0 h-screen z-[200] flex flex-col overflow-hidden',
+                'transition-all duration-200 ease-in-out bg-(--color-sidebar-bg)',
+                isRTL ? 'right-0' : 'left-0',
+                sidebarCollapsed ? 'w-[68px]' : 'w-[260px]',
+                mobileTranslate,
+            ].join(' ')}>
+
+                {/* Logo */}
+                <div className="flex items-center gap-3 px-[18px] min-h-16 border-b border-white/[0.06]">
+                    <div className="w-9 h-9 rounded-[10px] bg-(--color-primary) grid place-items-center text-lg shrink-0 text-white font-bold">
+                        ✦
                     </div>
-                ))}
-            </nav>
-
-            {/* Toggle */}
-            <div className="px-2.5 py-3 border-t border-white/[0.06]">
-                <button
-                    onClick={onToggle}
-                    className="flex items-center gap-3 px-2.5 py-2.5 rounded-lg w-full transition-colors duration-200"
-                    style={{ color: 'var(--color-sidebar-text)' }}
-                >
-                    <span className={`text-sm transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`}>◀</span>
-                    <span className={`text-[13.5px] font-medium whitespace-nowrap transition-opacity duration-200 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                        طي القائمة
+                    <span className={`text-base font-bold text-white whitespace-nowrap transition-opacity duration-200 ${sidebarCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                        متجري
                     </span>
-                </button>
-            </div>
-        </aside>
+                </div>
+
+                {/* Nav */}
+                <nav className="flex-1 px-2.5 py-3 overflow-y-auto overflow-x-hidden">
+                    {NAV.map(({ group, items }) => (
+                        <div key={group}>
+                            <div className={`text-[10px] font-semibold tracking-widest uppercase text-(--color-sidebar-text) px-2.5 pt-4 pb-1.5 whitespace-nowrap transition-opacity duration-200 ${sidebarCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+                                {group}
+                            </div>
+                            {items.map(({ routeName, icon, label, badge }) => {
+                                const isActive = route().current(routeName);
+                                const badgeCount = badge ? cartCount : null;
+                                return (
+                                    <Link
+                                        key={routeName}
+                                        href={route(routeName)}
+                                        onClick={closeMobileSidebar}
+                                        className={[
+                                            'flex items-center gap-3 px-2.5 py-2.5 rounded-lg no-underline',
+                                            'transition-colors duration-200 whitespace-nowrap',
+                                            isActive
+                                                ? 'bg-(--color-primary)/10 text-(--color-sidebar-active)'
+                                                : 'text-(--color-sidebar-text) hover:bg-(--color-primary)/10 hover:text-white',
+                                        ].join(' ')}
+                                    >
+                                        <FontAwesomeIcon icon={icon} className="w-4 h-4 shrink-0" />
+                                        <span className={`text-[13.5px] font-medium transition-opacity duration-200 ${sidebarCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                                            {label}
+                                        </span>
+                                        {badgeCount > 0 && (
+                                            <span className={`${isRTL ? 'mr-auto' : 'ml-auto'} bg-(--color-primary) text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full transition-opacity duration-200 ${sidebarCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+                                                {badgeCount}
+                                            </span>
+                                        )}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    ))}
+                </nav>
+
+                {/* Footer */}
+                <div className="px-2.5 py-3 border-t border-white/[0.06] flex flex-col gap-1">
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 px-2.5 py-2.5 rounded-lg w-full text-(--color-sidebar-text) hover:bg-(--color-primary)/10 hover:text-white transition-colors duration-200"
+                    >
+                        <FontAwesomeIcon icon={faRightFromBracket} className="w-4 h-4 shrink-0" />
+                        <span className={`text-[13.5px] font-medium whitespace-nowrap transition-opacity duration-200 ${sidebarCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                            {t('nav.logout')}
+                        </span>
+                    </button>
+
+                    <button
+                        onClick={toggleSidebar}
+                        className="flex items-center gap-3 px-2.5 py-2.5 rounded-lg w-full text-(--color-sidebar-text) hover:bg-(--color-primary)/10 hover:text-white transition-colors duration-200"
+                    >
+                        <FontAwesomeIcon icon={faAnglesLeft} className={`w-4 h-4 shrink-0 transition-transform duration-200 ${collapseRotate}`} />
+                        <span className={`text-[13.5px] font-medium whitespace-nowrap transition-opacity duration-200 ${sidebarCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                            {t('nav.collapse')}
+                        </span>
+                    </button>
+                </div>
+            </aside>
+        </>
     );
 }

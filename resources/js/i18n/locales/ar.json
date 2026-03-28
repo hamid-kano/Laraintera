@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "dashboard":  "لوحة التحكم",
+    "products":   "المنتجات",
+    "cart":       "السلة",
+    "orders":     "الطلبات",
+    "profile":    "الملف الشخصي",
+    "logout":     "تسجيل الخروج",
+    "collapse":   "طي القائمة"
+  },
+  "navbar": {
+    "search":        "بحث...",
+    "profile":       "الملف الشخصي",
+    "settings":      "الإعدادات",
+    "logout":        "تسجيل الخروج"
+  },
+  "dashboard": {
+    "title":        "لوحة التحكم",
+    "subtitle":     "مرحباً بك! إليك ما يحدث اليوم.",
+    "totalProducts":"إجمالي المنتجات",
+    "totalOrders":  "إجمالي الطلبات",
+    "totalRevenue": "إجمالي الإيرادات",
+    "cartItems":    "عناصر السلة",
+    "recentOrders": "أحدث الطلبات",
+    "colOrder":     "رقم الطلب",
+    "colStatus":    "الحالة",
+    "colTotal":     "الإجمالي",
+    "colDate":      "التاريخ",
+    "activity":     "النشاط الأخير"
+  },
+  "status": {
+    "pending":    "قيد الانتظار",
+    "processing": "قيد المعالجة",
+    "completed":  "مكتمل",
+    "cancelled":  "ملغي"
+  },
+  "common": {
+    "cancel":  "إلغاء",
+    "save":    "حفظ",
+    "search":  "بحث",
+    "loading": "جاري التحميل...",
+    "noData":  "لا توجد بيانات",
+    "back":    "رجوع",
+    "all":     "الكل"
+  }
+}

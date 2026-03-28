@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "dashboard":  "Dashboard",
+    "products":   "Products",
+    "cart":       "Cart",
+    "orders":     "Orders",
+    "profile":    "Profile",
+    "logout":     "Logout",
+    "collapse":   "Collapse"
+  },
+  "navbar": {
+    "search":        "Search...",
+    "profile":       "Profile",
+    "settings":      "Settings",
+    "logout":        "Logout"
+  },
+  "dashboard": {
+    "title":        "Dashboard",
+    "subtitle":     "Welcome back! Here's what's happening today.",
+    "totalProducts":"Total Products",
+    "totalOrders":  "Total Orders",
+    "totalRevenue": "Total Revenue",
+    "cartItems":    "Cart Items",
+    "recentOrders": "Recent Orders",
+    "colOrder":     "Order #",
+    "colStatus":    "Status",
+    "colTotal":     "Total",
+    "colDate":      "Date",
+    "activity":     "Recent Activity"
+  },
+  "status": {
+    "pending":    "Pending",
+    "processing": "Processing",
+    "completed":  "Completed",
+    "cancelled":  "Cancelled"
+  },
+  "common": {
+    "cancel":  "Cancel",
+    "save":    "Save",
+    "search":  "Search",
+    "loading": "Loading...",
+    "noData":  "No data available",
+    "back":    "Back",
+    "all":     "All"
+  }
+}
