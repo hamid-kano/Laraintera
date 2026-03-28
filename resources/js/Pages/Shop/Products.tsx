@@ -2,7 +2,6 @@ import ShopLayout from '@/Layouts/ShopLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
-// 📌 مفهوم Inertia: Props تأتي مباشرة من Controller بدون API
 interface Product {
     id: number;
     name: string;
@@ -22,12 +21,11 @@ interface Props {
 export default function Products({ products, categories, filters }: Props) {
     const [search, setSearch] = useState(filters.search ?? '');
 
-    // 📌 مفهوم Inertia: router.get() يرسل request لـ Laravel ويحدث الـ props بدون reload
     const handleSearch = (value: string) => {
         setSearch(value);
         router.get(route('products.index'), { search: value, category: filters.category }, {
-            preserveState: true,   // يحافظ على state المكون
-            replace: true,         // لا يضيف للـ browser history
+            preserveState: true,
+            replace: true,
         });
     };
 
@@ -42,56 +40,77 @@ export default function Products({ products, categories, filters }: Props) {
         <ShopLayout>
             <Head title="المنتجات" />
 
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">المنتجات</h1>
-                <p className="text-gray-500">{products.length} منتج متاح</p>
+            {/* Page Header */}
+            <div className="mb-6">
+                <h1 className="text-2xl font-bold" style={{ color: 'var(--color-text-strong)' }}>المنتجات</h1>
+                <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>{products.length} منتج متاح</p>
             </div>
 
-            {/* فلاتر البحث */}
-            <div className="flex flex-wrap gap-4 mb-8">
+            {/* Filters */}
+            <div
+                className="flex flex-wrap gap-3 mb-6 p-4 rounded-xl border"
+                style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
+            >
                 <input
                     type="text"
                     placeholder="ابحث عن منتج..."
                     value={search}
                     onChange={(e) => handleSearch(e.target.value)}
-                    className="border border-gray-300 rounded-lg px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="border rounded-lg px-4 py-2 text-sm outline-none transition-all flex-1 min-w-[200px]"
+                    style={{
+                        background: 'var(--color-surface-2)',
+                        borderColor: 'var(--color-border)',
+                        color: 'var(--color-text-strong)',
+                    }}
                 />
                 <div className="flex gap-2 flex-wrap">
-                    <button
-                        onClick={() => handleCategory('')}
-                        className={`px-4 py-2 rounded-lg text-sm transition-colors ${!filters.category ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'}`}
-                    >
-                        الكل
-                    </button>
-                    {categories.map((cat) => (
+                    {['', ...categories].map((cat) => (
                         <button
-                            key={cat}
+                            key={cat || 'all'}
                             onClick={() => handleCategory(cat)}
-                            className={`px-4 py-2 rounded-lg text-sm transition-colors ${filters.category === cat ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'}`}
+                            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors border"
+                            style={
+                                (cat === '' ? !filters.category : filters.category === cat)
+                                    ? { background: 'var(--color-primary)', color: '#fff', borderColor: 'var(--color-primary)' }
+                                    : { background: 'var(--color-surface-2)', color: 'var(--color-text)', borderColor: 'var(--color-border)' }
+                            }
                         >
-                            {cat}
+                            {cat || 'الكل'}
                         </button>
                     ))}
                 </div>
             </div>
 
-            {/* شبكة المنتجات */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {/* Products Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {products.map((product) => (
-                    <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                        <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+                    <div
+                        key={product.id}
+                        className="rounded-xl border overflow-hidden transition-shadow hover:shadow-md"
+                        style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
+                    >
+                        <img src={product.image} alt={product.name} className="w-full h-44 object-cover" />
                         <div className="p-4">
-                            <span className="text-xs text-indigo-600 font-medium bg-indigo-50 px-2 py-1 rounded-full">
+                            <span
+                                className="text-xs font-medium px-2 py-1 rounded-full"
+                                style={{ background: 'var(--color-primary-light)', color: 'var(--color-primary)' }}
+                            >
                                 {product.category}
                             </span>
-                            <h3 className="font-semibold text-gray-900 mt-2 mb-1">{product.name}</h3>
-                            <p className="text-gray-500 text-sm line-clamp-2 mb-3">{product.description}</p>
+                            <h3 className="font-semibold mt-2 mb-1 text-sm" style={{ color: 'var(--color-text-strong)' }}>
+                                {product.name}
+                            </h3>
+                            <p className="text-xs line-clamp-2 mb-3" style={{ color: 'var(--color-text-muted)' }}>
+                                {product.description}
+                            </p>
                             <div className="flex items-center justify-between">
-                                <span className="text-xl font-bold text-indigo-600">${product.price}</span>
-                                {/* 📌 مفهوم Inertia: <Link> للتنقل لصفحة التفاصيل */}
+                                <span className="text-lg font-bold" style={{ color: 'var(--color-primary)' }}>
+                                    ${product.price}
+                                </span>
                                 <Link
                                     href={route('products.show', product.id)}
-                                    className="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-indigo-700 transition-colors"
+                                    className="px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-colors"
+                                    style={{ background: 'var(--color-primary)' }}
                                 >
                                     التفاصيل
                                 </Link>
@@ -102,7 +121,7 @@ export default function Products({ products, categories, filters }: Props) {
             </div>
 
             {products.length === 0 && (
-                <div className="text-center py-16 text-gray-400">
+                <div className="text-center py-20" style={{ color: 'var(--color-text-muted)' }}>
                     <p className="text-5xl mb-4">🔍</p>
                     <p className="text-lg">لا توجد منتجات مطابقة</p>
                 </div>

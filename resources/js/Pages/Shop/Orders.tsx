@@ -16,68 +16,96 @@ interface Order {
     items: OrderItem[];
 }
 
-const statusConfig = {
-    pending:    { label: 'قيد الانتظار', color: 'bg-yellow-100 text-yellow-700' },
-    processing: { label: 'قيد المعالجة', color: 'bg-blue-100 text-blue-700' },
-    completed:  { label: 'مكتمل',        color: 'bg-green-100 text-green-700' },
-    cancelled:  { label: 'ملغي',         color: 'bg-red-100 text-red-700' },
+const STATUS: Record<string, { label: string; bg: string; color: string }> = {
+    pending:    { label: 'قيد الانتظار', bg: 'rgba(245,158,11,0.1)',  color: 'var(--color-warning)' },
+    processing: { label: 'قيد المعالجة', bg: 'rgba(59,130,246,0.1)',  color: 'var(--color-info)' },
+    completed:  { label: 'مكتمل',        bg: 'rgba(16,185,129,0.1)',  color: 'var(--color-success)' },
+    cancelled:  { label: 'ملغي',         bg: 'rgba(239,68,68,0.1)',   color: 'var(--color-danger)' },
 };
 
 export default function Orders({ orders }: { orders: Order[] }) {
-    // 📌 مفهوم Inertia: usePage().props.flash للرسائل المؤقتة بعد redirect
     const { flash } = usePage().props as any;
 
     return (
         <ShopLayout>
             <Head title="طلباتي" />
 
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">📦 طلباتي</h1>
+            <div className="mb-6">
+                <h1 className="text-2xl font-bold" style={{ color: 'var(--color-text-strong)' }}>📦 طلباتي</h1>
+            </div>
 
-            {/* 📌 مفهوم Inertia: flash message تأتي بعد redirect من checkout */}
             {flash?.success && (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-6">
+                <div
+                    className="px-4 py-3 rounded-xl border mb-6 text-sm"
+                    style={{ background: 'rgba(16,185,129,0.1)', borderColor: 'var(--color-success)', color: 'var(--color-success)' }}
+                >
                     ✅ {flash.success}
                 </div>
             )}
 
             {orders.length === 0 ? (
-                <div className="text-center py-20">
-                    <p className="text-6xl mb-4">📦</p>
-                    <p className="text-xl text-gray-500 mb-6">لا توجد طلبات بعد</p>
-                    <Link href={route('products.index')} className="bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 transition-colors">
+                <div
+                    className="rounded-xl border p-16 text-center"
+                    style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
+                >
+                    <p className="text-5xl mb-4">📦</p>
+                    <p className="text-lg mb-6" style={{ color: 'var(--color-text-muted)' }}>لا توجد طلبات بعد</p>
+                    <Link
+                        href={route('products.index')}
+                        className="px-6 py-2.5 rounded-lg text-sm font-medium text-white"
+                        style={{ background: 'var(--color-primary)' }}
+                    >
                         ابدأ التسوق
                     </Link>
                 </div>
             ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {orders.map((order) => {
-                        const status = statusConfig[order.status];
+                        const s = STATUS[order.status];
                         return (
-                            <div key={order.id} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                                {/* رأس الطلب */}
-                                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-                                    <div className="flex items-center gap-4">
-                                        <span className="font-bold text-gray-900">طلب #{order.id}</span>
-                                        <span className={`text-xs px-3 py-1 rounded-full font-medium ${status.color}`}>
-                                            {status.label}
+                            <div
+                                key={order.id}
+                                className="rounded-xl border overflow-hidden"
+                                style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
+                            >
+                                {/* Header */}
+                                <div
+                                    className="flex items-center justify-between px-5 py-3 border-b"
+                                    style={{ borderColor: 'var(--color-border)' }}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <span className="font-bold text-sm" style={{ color: 'var(--color-text-strong)' }}>
+                                            طلب #{order.id}
+                                        </span>
+                                        <span
+                                            className="text-xs px-2.5 py-1 rounded-full font-medium"
+                                            style={{ background: s.bg, color: s.color }}
+                                        >
+                                            {s.label}
                                         </span>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-bold text-indigo-600 text-lg">${order.total}</p>
-                                        <p className="text-xs text-gray-400">
+                                        <p className="font-bold text-sm" style={{ color: 'var(--color-primary)' }}>${order.total}</p>
+                                        <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
                                             {new Date(order.created_at).toLocaleDateString('ar-SA')}
                                         </p>
                                     </div>
                                 </div>
 
-                                {/* منتجات الطلب */}
-                                <div className="divide-y divide-gray-50">
+                                {/* Items */}
+                                <div>
                                     {order.items.map((item) => (
-                                        <div key={item.id} className="flex items-center gap-4 px-6 py-3">
-                                            <img src={item.product.image} alt={item.product.name} className="w-12 h-12 object-cover rounded-lg" />
-                                            <span className="flex-1 text-gray-700">{item.product.name}</span>
-                                            <span className="text-gray-500 text-sm">× {item.quantity}</span>
-                                            <span className="font-medium text-gray-900">${(item.price * item.quantity).toFixed(2)}</span>
+                                        <div
+                                            key={item.id}
+                                            className="flex items-center gap-4 px-5 py-3 border-b last:border-0"
+                                            style={{ borderColor: 'var(--color-border)' }}
+                                        >
+                                            <img src={item.product.image} alt={item.product.name} className="w-10 h-10 object-cover rounded-lg" />
+                                            <span className="flex-1 text-sm" style={{ color: 'var(--color-text)' }}>{item.product.name}</span>
+                                            <span className="text-xs" style={{ color: 'var(--color-text-muted)' }}>× {item.quantity}</span>
+                                            <span className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>
+                                                ${(item.price * item.quantity).toFixed(2)}
+                                            </span>
                                         </div>
                                     ))}
                                 </div>
