@@ -140,5 +140,23 @@
     "noData":  "No data available",
     "back":    "Back",
     "all":     "All"
+  },
+  "profile": {
+    "subtitle":           "Manage your account information and password",
+    "infoTitle":          "Profile Information",
+    "infoDesc":           "Update your name and email address",
+    "passwordTitle":      "Update Password",
+    "passwordDesc":       "Use a strong, long password to keep your account secure",
+    "currentPassword":    "Current Password",
+    "newPassword":        "New Password",
+    "saved":              "Saved",
+    "unverified":         "Your email is unverified.",
+    "resendVerification": "Click here to resend",
+    "verificationSent":   "Verification link sent.",
+    "deleteTitle":        "Delete Account",
+    "deleteDesc":         "Once deleted, all your data will be permanently removed.",
+    "deleteBtn":          "Delete Account",
+    "deleteConfirmTitle": "Confirm Account Deletion",
+    "deleteConfirmDesc":  "This action cannot be undone. Enter your password to confirm."
   }
 }

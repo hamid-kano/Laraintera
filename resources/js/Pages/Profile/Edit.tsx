@@ -1,43 +1,33 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import ShopLayout from '@/Layouts/ShopLayout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
-import DeleteUserForm from './Partials/DeleteUserForm';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm';
+import { useTranslation } from 'react-i18next';
+import PageHeader from '@/Components/UI/PageHeader';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
+import UpdatePasswordForm from './Partials/UpdatePasswordForm';
+import DeleteUserForm from './Partials/DeleteUserForm';
 
-export default function Edit({
-    mustVerifyEmail,
-    status,
-}: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+export default function Edit({ mustVerifyEmail, status }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+    const { t } = useTranslation();
+
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Profile
-                </h2>
-            }
-        >
-            <Head title="Profile" />
+        <ShopLayout>
+            <Head title={t('nav.profile')} />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <UpdateProfileInformationForm
-                            mustVerifyEmail={mustVerifyEmail}
-                            status={status}
-                            className="max-w-xl"
-                        />
-                    </div>
+            <PageHeader
+                breadcrumbs={[
+                    { label: t('nav.dashboard'), href: route('dashboard') },
+                    { label: t('nav.profile') },
+                ]}
+                title={t('nav.profile')}
+                subtitle={t('profile.subtitle')}
+            />
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <UpdatePasswordForm className="max-w-xl" />
-                    </div>
-
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <DeleteUserForm className="max-w-xl" />
-                    </div>
-                </div>
+            <div className="max-w-3xl space-y-5">
+                <UpdateProfileInformationForm mustVerifyEmail={mustVerifyEmail} status={status} />
+                <UpdatePasswordForm />
+                <DeleteUserForm />
             </div>
-        </AuthenticatedLayout>
+        </ShopLayout>
     );
 }
