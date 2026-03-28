@@ -6,6 +6,7 @@ import {
     faBell, faUser, faGear, faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import { cn } from '@/utils/cn';
 import useUIStore from '@/store/uiStore';
 
@@ -14,6 +15,13 @@ export default function Navbar() {
     const { auth } = usePage().props as any;
     const { lang, theme, toggleMobileSidebar, toggleTheme, setLang } = useUIStore();
     const isRTL = lang === 'ar';
+
+    // ✅ axios بدل router.post — لا يسبب Inertia reload
+    const handleLangToggle = async () => {
+        const newLang = isRTL ? 'en' : 'ar';
+        setLang(newLang); // يغير Frontend فوراً
+        await axios.post('/locale', { locale: newLang }); // يحفظ Cookie في Background
+    };
 
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -68,7 +76,7 @@ export default function Navbar() {
 
                 {/* Lang toggle */}
                 <button
-                    onClick={() => setLang(isRTL ? 'en' : 'ar')}
+                    onClick={handleLangToggle}
                     className="h-8 px-2.5 rounded-lg border border-(--color-border) bg-(--color-surface) text-(--color-text) text-[11px] font-bold hover:bg-(--color-surface-2) transition-colors"
                 >
                     {isRTL ? 'EN' : 'ع'}

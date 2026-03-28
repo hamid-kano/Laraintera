@@ -3,40 +3,42 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\LoginRequest;
+use App\Http\Resources\OrderResource;
+use App\Http\Resources\ProductResource;
 use App\Models\CartItem;
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\CartService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class ApiController extends Controller
 {
+    public function __construct(private CartService $cartService) {}
+
     // ── Auth ──────────────────────────────────────────
 
-    public function login(Request $request): JsonResponse
+    // ✅ Controller: استقبال + تفويض فقط
+    // ✅ Validation: في LoginRequest
+    public function login(LoginRequest $request): JsonResponse
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
-
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['بيانات الاعتماد غير صحيحة.'],
+                'email' => [__('api.auth.invalid_credentials')],
             ]);
         }
 
         $user->tokens()->delete();
-        $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
-            'token' => $token,
+            'token' => $user->createToken('api-token')->plainTextToken,
             'user'  => ['id' => $user->id, 'name' => $user->name, 'email' => $user->email],
         ]);
     }
@@ -44,7 +46,7 @@ class ApiController extends Controller
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'تم تسجيل الخروج']);
+        return response()->json(['message' => __('api.auth.logout_success')]);
     }
 
     public function me(Request $request): JsonResponse
@@ -54,94 +56,60 @@ class ApiController extends Controller
 
     // ── Products ──────────────────────────────────────
 
-    public function products(Request $request): JsonResponse
+    // ✅ Resource: يتحكم بشكل الـ JSON
+    public function products(Request $request): AnonymousResourceCollection
     {
         $products = Product::query()
             ->when($request->search,   fn($q) => $q->where('name', 'like', "%{$request->search}%"))
             ->when($request->category, fn($q) => $q->where('category', $request->category))
             ->paginate($request->per_page ?? 8);
 
-        return response()->json($products);
+        return ProductResource::collection($products);
     }
 
-    public function product(Product $product): JsonResponse
+    public function product(Product $product): ProductResource
     {
-        return response()->json($product);
+        return new ProductResource($product);
     }
 
     // ── Cart ──────────────────────────────────────────
 
+    // ✅ Service: كل الـ business logic في CartService
     public function cart(Request $request): JsonResponse
     {
-        $items = CartItem::with('product')->where('user_id', $request->user()->id)->get();
-
-        return response()->json([
-            'items' => $items,
-            'total' => $items->sum(fn($i) => $i->product->price * $i->quantity),
-        ]);
+        return response()->json($this->cartService->getCart($request->user()));
     }
 
     public function addToCart(Request $request, Product $product): JsonResponse
     {
-        $item = CartItem::firstOrNew([
-            'user_id'    => $request->user()->id,
-            'product_id' => $product->id,
-        ]);
-        $item->quantity = ($item->quantity ?? 0) + 1;
-        $item->save();
-
-        return response()->json(['message' => 'تمت الإضافة', 'item' => $item], 201);
+        $item = $this->cartService->addItem($request->user(), $product);
+        return response()->json(['message' => __('api.cart.added'), 'item' => $item], 201);
     }
 
     public function removeFromCart(Request $request, CartItem $cartItem): JsonResponse
     {
-        abort_if($cartItem->user_id !== $request->user()->id, 403);
-        $cartItem->delete();
-        return response()->json(['message' => 'تم الحذف']);
+        $this->cartService->removeItem($request->user(), $cartItem);
+        return response()->json(['message' => __('api.cart.removed')]);
     }
 
     // ── Orders ────────────────────────────────────────
 
-    public function orders(Request $request): JsonResponse
+    public function orders(Request $request): AnonymousResourceCollection
     {
         $orders = Order::with('items.product')
             ->where('user_id', $request->user()->id)
             ->latest()
             ->get();
 
-        return response()->json($orders);
+        return OrderResource::collection($orders);
     }
 
     public function checkout(Request $request): JsonResponse
     {
-        $cartItems = CartItem::with('product')->where('user_id', $request->user()->id)->get();
-
-        if ($cartItems->isEmpty()) {
-            return response()->json(['message' => 'السلة فارغة'], 422);
-        }
-
-        $total = $cartItems->sum(fn($i) => $i->product->price * $i->quantity);
-
-        $order = Order::create([
-            'user_id' => $request->user()->id,
-            'total'   => $total,
-            'status'  => 'pending',
-        ]);
-
-        foreach ($cartItems as $item) {
-            OrderItem::create([
-                'order_id'   => $order->id,
-                'product_id' => $item->product_id,
-                'quantity'   => $item->quantity,
-                'price'      => $item->product->price,
-            ]);
-        }
-
-        CartItem::where('user_id', $request->user()->id)->delete();
-
+        $order = $this->cartService->checkout($request->user());
         return response()->json([
-            'message' => 'تم إنشاء الطلب',
-            'order'   => $order->load('items.product'),
+            'message' => __('api.orders.created'),
+            'order'   => new OrderResource($order),
         ], 201);
     }
 }

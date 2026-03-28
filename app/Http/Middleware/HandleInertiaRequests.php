@@ -39,6 +39,8 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error'   => fn () => $request->session()->get('error'),
             ],
+            // 📌 نمرر اللغة الحالية من Laravel لـ React
+            'locale' => fn () => app()->getLocale(),
         ];
     }
 }

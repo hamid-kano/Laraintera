@@ -16,6 +16,14 @@ Route::get('/', function () {
     ]);
 });
 
+// 📌 route لتغيير اللغة — يحفظ في Cookie (أفضل من Session)
+Route::post('/locale', function () {
+    $locale = request('locale');
+    abort_if(! in_array($locale, ['ar', 'en']), 422);
+    return response()->json(['locale' => $locale])
+        ->cookie('locale', $locale, 60 * 24 * 365, '/', null, false, false);
+})->name('locale.set');
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

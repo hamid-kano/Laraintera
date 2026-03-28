@@ -1,22 +1,26 @@
 import Sidebar from '@/Components/Shop/Sidebar';
 import Navbar from '@/Components/Shop/Navbar';
 import { PropsWithChildren, useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
 import useUIStore from '@/store/uiStore';
 
 export default function ShopLayout({ children }: PropsWithChildren) {
-    const { sidebarCollapsed, lang } = useUIStore();
+    const { sidebarCollapsed, lang, setLang } = useUIStore();
+    const { locale } = usePage().props as any;
     const isRTL = lang === 'ar';
     const offset = sidebarCollapsed
         ? (isRTL ? 'md:mr-[68px]'  : 'md:ml-[68px]')
         : (isRTL ? 'md:mr-[260px]' : 'md:ml-[260px]');
 
-    // تطبيق dir و lang عند أول تحميل
     useEffect(() => {
+        // 📌 مزامنة لغة Laravel Session مع Frontend store
+        if (locale && locale !== lang) setLang(locale);
+
         document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
         document.documentElement.setAttribute('lang', lang);
         const theme = localStorage.getItem('theme') || 'light';
         document.documentElement.classList.toggle('dark', theme === 'dark');
-    }, []);
+    }, [locale]);
 
     return (
         <div className="min-h-screen bg-(--color-bg)">

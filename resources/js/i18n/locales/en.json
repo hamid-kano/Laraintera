@@ -158,5 +158,18 @@
     "deleteBtn":          "Delete Account",
     "deleteConfirmTitle": "Confirm Account Deletion",
     "deleteConfirmDesc":  "This action cannot be undone. Enter your password to confirm."
+  },
+
+  "errors": {
+    "network":      "Connection error, check your internet.",
+    "server":       "Server error, please try again.",
+    "unauthorized": "Session expired, please sign in again.",
+    "unknown":      "An unexpected error occurred."
+  },
+
+  "api": {
+    "loading":  "Loading...",
+    "retrying": "Retrying...",
+    "success":  "Operation completed successfully."
   }
 }
