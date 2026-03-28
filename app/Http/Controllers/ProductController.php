@@ -12,9 +12,9 @@ class ProductController extends Controller
     public function index(): Response
     {
         $products = Product::query()
-            ->when(request('search'), fn($q) => $q->where('name', 'like', '%' . request('search') . '%'))
+            ->when(request('search'),   fn($q) => $q->where('name', 'like', '%' . request('search') . '%'))
             ->when(request('category'), fn($q) => $q->where('category', request('category')))
-            ->get();
+            ->paginate(8);
 
         $categories = Product::distinct()->pluck('category');
 

@@ -37,13 +37,14 @@ class CartService
 
     public function removeItem(User $user, CartItem $cartItem): void
     {
-        abort_if($cartItem->user_id !== $user->id, 403, __('api.cart.not_yours'));
+        // ✅ Policy تتحقق أن المستخدم يملك العنصر
+        abort_unless($user->can('delete', $cartItem), 403, __('api.auth.unauthorized'));
         $cartItem->delete();
     }
 
     public function updateQuantity(User $user, CartItem $cartItem, int $quantity): CartItem
     {
-        abort_if($cartItem->user_id !== $user->id, 403, __('api.cart.not_yours'));
+        abort_unless($user->can('update', $cartItem), 403, __('api.auth.unauthorized'));
         $cartItem->update(['quantity' => max(1, $quantity)]);
         return $cartItem->fresh('product');
     }

@@ -1,51 +1,62 @@
-import PrimaryButton from '@/Components/PrimaryButton';
-import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelopeCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { FormEventHandler, useEffect } from 'react';
+import useUIStore from '@/store/uiStore';
 
 export default function VerifyEmail({ status }: { status?: string }) {
+    const { t } = useTranslation();
+    const { lang } = useUIStore();
     const { post, processing } = useForm({});
+
+    useEffect(() => {
+        document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+        document.documentElement.setAttribute('lang', lang);
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+    }, []);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
         post(route('verification.send'));
     };
 
     return (
-        <GuestLayout>
-            <Head title="Email Verification" />
+        <>
+            <Head title={t('verifyEmail.title')} />
+            <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--color-bg)' }}>
+                <div className="w-full max-w-md rounded-2xl border shadow-sm overflow-hidden" style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
 
-            <div className="mb-4 text-sm text-gray-600">
-                Thanks for signing up! Before getting started, could you verify
-                your email address by clicking on the link we just emailed to
-                you? If you didn't receive the email, we will gladly send you
-                another.
+                    <div className="px-8 pt-8 pb-6 border-b text-center" style={{ borderColor: 'var(--color-border)' }}>
+                        <div className="w-16 h-16 rounded-2xl grid place-items-center mx-auto mb-4" style={{ background: 'var(--color-primary-light)' }}>
+                            <FontAwesomeIcon icon={faEnvelopeCircleCheck} className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
+                        </div>
+                        <h1 className="text-xl font-bold" style={{ color: 'var(--color-text-strong)' }}>{t('verifyEmail.title')}</h1>
+                        <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>{t('verifyEmail.desc')}</p>
+                    </div>
+
+                    <div className="px-8 py-6">
+                        {status === 'verification-link-sent' && (
+                            <div className="mb-4 text-sm px-4 py-3 rounded-lg border" style={{ background: 'rgba(16,185,129,0.1)', borderColor: 'var(--color-success)', color: 'var(--color-success)' }}>
+                                ✅ {t('verifyEmail.sent')}
+                            </div>
+                        )}
+
+                        <form onSubmit={submit}>
+                            <button type="submit" disabled={processing} className="w-full py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-60 mb-4" style={{ background: 'var(--color-primary)' }}>
+                                {processing ? t('common.loading') : t('verifyEmail.resend')}
+                            </button>
+                        </form>
+
+                        <div className="text-center">
+                            <Link href={route('logout')} method="post" as="button" className="text-sm" style={{ color: 'var(--color-danger)' }}>
+                                {t('nav.logout')}
+                            </Link>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            {status === 'verification-link-sent' && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    A new verification link has been sent to the email address
-                    you provided during registration.
-                </div>
-            )}
-
-            <form onSubmit={submit}>
-                <div className="mt-4 flex items-center justify-between">
-                    <PrimaryButton disabled={processing}>
-                        Resend Verification Email
-                    </PrimaryButton>
-
-                    <Link
-                        href={route('logout')}
-                        method="post"
-                        as="button"
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Log Out
-                    </Link>
-                </div>
-            </form>
-        </GuestLayout>
+        </>
     );
 }

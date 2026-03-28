@@ -100,6 +100,27 @@
       "support":   "Support"
     }
   },
+  "forgotPassword": {
+    "title":  "Forgot Password",
+    "desc":   "Enter your email and we'll send you a reset link.",
+    "submit": "Send Reset Link"
+  },
+  "resetPassword": {
+    "title":  "Reset Password",
+    "desc":   "Enter your new password.",
+    "submit": "Reset Password"
+  },
+  "verifyEmail": {
+    "title":  "Verify Email",
+    "desc":   "We sent a verification link to your email. Check your inbox.",
+    "resend": "Resend Verification Email",
+    "sent":   "A new verification link has been sent to your email."
+  },
+  "confirmPassword": {
+    "title":  "Confirm Password",
+    "desc":   "This is a secure area. Please confirm your password to continue.",
+    "submit": "Confirm"
+  },
   "login": {
     "title":          "Sign In",
     "subtitle":       "Sign in to continue",
@@ -140,6 +161,9 @@
     "noData":  "No data available",
     "back":    "Back",
     "all":     "All"
+  },
+  "pagination": {
+    "showing": "Showing {{from}}-{{to}} of {{total}} products"
   },
   "profile": {
     "subtitle":           "Manage your account information and password",
