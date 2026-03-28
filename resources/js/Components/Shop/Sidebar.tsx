@@ -3,16 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faGauge, faShoppingBag, faCartShopping, faBoxOpen,
-    faUser, faAnglesLeft, faRightFromBracket, faCode,
+    faUser, faAnglesLeft, faRightFromBracket, faCode, faShield,
 } from '@fortawesome/free-solid-svg-icons';
 import useUIStore from '@/store/uiStore';
 
-const useNavItems = (t: (k: string) => string) => [
+const useNavItems = (t: (k: string) => string, isAdmin: boolean) => [
     {
         group: t('nav.dashboard'),
         items: [
             { routeName: 'dashboard',    icon: faGauge,  label: t('nav.dashboard') },
             { routeName: 'api.explorer', icon: faCode,   label: 'API Explorer' },
+            ...(isAdmin ? [{ routeName: 'admin.dashboard', icon: faShield, label: 'Admin' }] : []),
         ],
     },
     {
@@ -35,8 +36,10 @@ export default function Sidebar() {
     const { t } = useTranslation();
     const { sidebarCollapsed, sidebarMobileOpen, lang, toggleSidebar, closeMobileSidebar } = useUIStore();
     const { cartCount } = usePage().props as any;
+    const { auth } = usePage().props as any;
+    const isAdmin = auth?.user?.roles?.some((r: any) => r.name === 'admin') ?? false;
     const isRTL = lang === 'ar';
-    const NAV = useNavItems(t);
+    const NAV = useNavItems(t, isAdmin);
 
     const collapseRotate = isRTL
         ? (sidebarCollapsed ? '' : 'rotate-180')

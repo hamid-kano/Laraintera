@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
@@ -42,6 +43,17 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
+
+    // 🔒 Admin Routes — يحتاج role:admin
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard',                          [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/products',                          [AdminController::class, 'products'])->name('products');
+        Route::post('/products',                         [AdminController::class, 'storeProduct'])->name('products.store');
+        Route::put('/products/{product}',                [AdminController::class, 'updateProduct'])->name('products.update');
+        Route::delete('/products/{product}',             [AdminController::class, 'deleteProduct'])->name('products.delete');
+        Route::get('/orders',                            [AdminController::class, 'orders'])->name('orders');
+        Route::patch('/orders/{order}/status',           [AdminController::class, 'updateOrderStatus'])->name('orders.status');
+    });
 
     // 🔌 API Explorer
     Route::get('/api-explorer', fn() => Inertia::render('Api/Explorer'))->name('api.explorer');
